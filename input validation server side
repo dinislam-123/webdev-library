@@ -1,0 +1,44 @@
+Server file.
+=============
+
+var express       =     require("express");
+var validation    =     require("validator");
+var bodyParser    =     require("body-parser");
+
+var app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.get('/',function(req,res){
+    res.sendFile(__dirname + '/form.html');
+});
+
+/* Form will redirect here with Input data */
+app.post('/validateform',function(req,res){
+    if(!validation.isEmail(req.body.email)) {
+                //True or false return by this function.
+        res.send("Email is Bad");
+    } else if(!validation.isAlpha(req.body.user_name)) {
+        res.send("Name is Bad");
+    } else {
+        res.send("Form submitted");
+    }
+});
+app.listen(4000,function(){
+    console.log("Listening at PORT 3000");
+});
+
+
+Html file
+============
+<html>
+  <head>
+    <title>Node validator</title>
+  </head>
+  <body>
+    <form id="main_form" action="validateform" method="post">
+      <label>Name :</label><input type="text" name="user_name">
+      <label>Email : </label><input type="TEXT" name="email"><br>
+      <input type = "submit" value ="Submit">
+    </form>
+  </body>
+</html>

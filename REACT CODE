@@ -1,0 +1,80 @@
+app.get('/logout', function (req, res) {
+    res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+    return res.sendStatus(401);
+});
+
+app.get('/logout', function (req, res) {
+  req.session.destroy();
+  res.send("logout success!");
+});
+ 
+
+router.get('/logout', function(req, res, next) {
+  if (req.session) {
+    // delete session object
+    req.session.destroy(function(err) {
+      if(err) {
+        return next(err);
+      } else {
+        return res.redirect('/');
+      }
+    });
+  }
+});
+
+
+if (req.body.email &&
+  req.body.username &&
+  req.body.password &&
+  req.body.passwordConf) {
+  var userData = {
+    email: req.body.email,
+    username: req.body.username,
+    password: req.body.password,
+    passwordConf: req.body.passwordConf,
+  }
+  //use schema.create to insert data into the db
+  User.create(userData, function (err, user) {
+    if (err) {
+      return next(err)
+    } else {
+      return res.redirect('/profile');
+    }
+  });
+}
+
+
+window.localStorage.setItem("name",document.getElementById("name").value);
+var name = window.localStorage.getItem("name");
+
+
+
+return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+        .then(handleResponse)
+        .then(user => {
+            // login successful if there's a user in the response
+            if (user) {
+                // store user details and basic auth credentials in local storage 
+                // to keep user logged in between page refreshes
+                user.authdata = window.btoa(username + ':' + password);
+                localStorage.setItem('user', JSON.stringify(user));
+            }
+
+            return user;
+        });
+}
+
+function logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem('user');
+}
+
+location.reload(true);
+
+ componentDidMount() {
+        this.setState({ 
+            user: JSON.parse(localStorage.getItem('user')),
+            users: { loading: true }
+        });
+        userService.getAll().then(users => this.setState({ users }));
+    }
